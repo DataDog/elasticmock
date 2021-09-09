@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from functools import wraps
-
 from elasticsearch.client import _normalize_hosts
 from six import PY3
 
