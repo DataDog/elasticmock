@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from functools import wraps
-
 from elasticsearch.client import _normalize_hosts
 from six import PY3
 
@@ -46,14 +44,18 @@ def _get_elasticmock(hosts=None, *args, **kwargs):
     return connection
 
 
-def elasticmock(f, klasses_to_patch=None):
+def elasticmock(f=None, klasses_to_patch=None):
     klasses_to_mock = klasses_to_patch or DEFAULT_ELASTIC_CLASSES_TO_PATCH
 
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        ELASTIC_INSTANCES.clear()
-        with nested(*(patch(klass, _get_elasticmock) for klass in klasses_to_mock)):
-            result = f(*args, **kwargs)
-        return result
+    def decorator(func):
+        def inner(*args, **kwargs):
+            ELASTIC_INSTANCES.clear()
+            with nested(*(patch(klass, _get_elasticmock) for klass in klasses_to_mock)):
+                result = func(*args, **kwargs)
+            return result
 
-    return decorated
+        return inner
+
+    if f is not None:
+        return decorator(f)
+    return decorator
