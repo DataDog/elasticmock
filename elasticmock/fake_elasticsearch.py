@@ -711,11 +711,21 @@ class FakeElasticsearch(Elasticsearch):
         "track_scores",
         "version",
     )
-    def search(self, index=None, doc_type=None, body=None, params=None, headers=None):
+    def search(
+        self,
+        index=None,
+        doc_type=None,
+        body=None,
+        params=None,
+        headers=None,
+        *args,
+        **kwargs
+    ):
         searchable_indexes = self._normalize_index_to_list(index)
 
         matches = []
         conditions = []
+        total_hits = 0
 
         if body and "query" in body:
             query = body["query"]
