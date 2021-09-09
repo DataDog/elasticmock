@@ -27,7 +27,7 @@ from elasticmock.fake_elasticsearch import FakeElasticsearch
 
 ELASTIC_INSTANCES = {}
 # if you needed to patch elasticsearch6, elasticsearch7 as well
-ELASTIC_CLASSES_TO_PATCH = {
+DEFAULT_ELASTIC_CLASSES_TO_PATCH = {
     "elasticsearch.Elasticsearch",
 }
 
@@ -46,12 +46,14 @@ def _get_elasticmock(hosts=None, *args, **kwargs):
     return connection
 
 
-def elasticmock(f):
+def elasticmock(f, klasses_to_patch=None):
+    klasses_to_mock = klasses_to_patch or DEFAULT_ELASTIC_CLASSES_TO_PATCH
+
     @wraps(f)
     def decorated(*args, **kwargs):
         ELASTIC_INSTANCES.clear()
         with nested(
-            *(patch(klass, _get_elasticmock) for klass in ELASTIC_CLASSES_TO_PATCH)
+            *(patch(klass, _get_elasticmock) for klass in klasses_to_mock)
         ):
             result = f(*args, **kwargs)
         return result
