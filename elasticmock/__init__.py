@@ -52,9 +52,7 @@ def elasticmock(f, klasses_to_patch=None):
     @wraps(f)
     def decorated(*args, **kwargs):
         ELASTIC_INSTANCES.clear()
-        with nested(
-            *(patch(klass, _get_elasticmock) for klass in klasses_to_mock)
-        ):
+        with nested(*(patch(klass, _get_elasticmock) for klass in klasses_to_mock)):
             result = f(*args, **kwargs)
         return result
 
