@@ -711,7 +711,16 @@ class FakeElasticsearch(Elasticsearch):
         "track_scores",
         "version",
     )
-    def search(self, index=None, doc_type=None, body=None, params=None, headers=None):
+    def search(
+        self,
+        index=None,
+        doc_type=None,
+        body=None,
+        params=None,
+        headers=None,
+        *args,
+        **kwargs
+    ):
         searchable_indexes = self._normalize_index_to_list(index)
 
         matches = []
