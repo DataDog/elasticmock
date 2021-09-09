@@ -725,7 +725,6 @@ class FakeElasticsearch(Elasticsearch):
 
         matches = []
         conditions = []
-        total_hits = 0
 
         if body and "query" in body:
             query = body["query"]
